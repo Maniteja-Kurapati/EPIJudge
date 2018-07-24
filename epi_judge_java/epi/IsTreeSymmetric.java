@@ -5,8 +5,34 @@ public class IsTreeSymmetric {
   @EpiTest(testDataFile = "is_tree_symmetric.tsv")
 
   public static boolean isSymmetric(BinaryTreeNode<Integer> tree) {
-    // TODO - you fill in here.
+    if(!postOrderLeft(tree).data.equals(postOrderRight(tree).data)) {
+    	return false;
+    }
     return true;
+  }
+  
+  public static BinaryTreeNode<Integer> postOrderLeft(BinaryTreeNode<Integer> tree){
+	  
+	  if(tree == null) {
+		  return null;
+	  }
+	  
+	  postOrderLeft(tree.left);
+	  postOrderLeft(tree.right);
+	  
+	  return tree;
+  }
+  
+  public static BinaryTreeNode<Integer> postOrderRight(BinaryTreeNode<Integer> tree){
+	  
+	  if(tree == null) {
+		  return null;
+	  }
+	  
+	  postOrderRight(tree.right);
+	  postOrderRight(tree.left);
+	  
+	  return tree;
   }
 
   public static void main(String[] args) {
