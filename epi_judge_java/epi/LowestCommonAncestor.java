@@ -8,9 +8,57 @@ public class LowestCommonAncestor {
   public static BinaryTreeNode<Integer> LCA(BinaryTreeNode<Integer> tree,
                                             BinaryTreeNode<Integer> node0,
                                             BinaryTreeNode<Integer> node1) {
-    // TODO - you fill in here.
-    return null;
+   return hasNodes(tree, node0, node1).node;
   }
+  
+  public static StatusItem hasNodes(BinaryTreeNode<Integer> tree,
+          BinaryTreeNode<Integer> node0,
+          BinaryTreeNode<Integer> node1) {
+	  
+	  if(tree == null) {
+		  return new StatusItem(null, 0);
+	  }
+	  
+	  StatusItem leftResult = hasNodes(tree.left, node0, node1);
+	  if(leftResult.count == 2) {
+		  return leftResult;
+	  }
+	  StatusItem rightResult = hasNodes(tree.right, node0, node1);
+	  if(rightResult.count ==2) {
+		  return rightResult;
+	  }
+	  
+	  if(leftResult.count == 1 && rightResult.count == 1) {
+		  return new StatusItem(tree, 2);
+	  }
+	  
+	  if(leftResult.count == 1 || rightResult.count == 1) {
+		  if(tree == node0 || tree == node1) {
+			  return new StatusItem(tree, 2);
+		  }
+		  return leftResult.count == 1 ? leftResult : rightResult;
+	  }
+	  
+	  if(tree == node0 || tree == node1) {
+		  if(tree == node0 && tree == node1) {
+			  return new StatusItem(tree, 2);
+		  }
+		  return new StatusItem(null, 1);
+	  }
+	    
+	  return new StatusItem(null,0);	  
+  }
+  
+  private static class StatusItem{
+	  public BinaryTreeNode<Integer> node;
+	  public int count;
+	  public StatusItem(BinaryTreeNode<Integer> node, int count) {
+		this.node = node;
+		this.count = count;
+	}
+  }
+  
+  
   @EpiTest(testDataFile = "lowest_common_ancestor.tsv")
   public static int lcaWrapper(TimedExecutor executor,
                                BinaryTreeNode<Integer> tree, Integer key0,
