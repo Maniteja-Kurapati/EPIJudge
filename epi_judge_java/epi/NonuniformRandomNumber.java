@@ -34,6 +34,10 @@ public class NonuniformRandomNumber {
     public static int BinarySearchCustom(List<Interval> intervals, double num, int start, int end) {
 	int midpoint = (int) Math.floor((start + end) / 2);
 
+	if (start > end) {
+	    return -1;
+	}
+
 	if (num > intervals.get(midpoint).start && num <= intervals.get(midpoint).end) {
 	    return midpoint;
 	} else if (num < intervals.get(midpoint).start) {
