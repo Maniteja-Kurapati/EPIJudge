@@ -11,18 +11,15 @@ public class SearchShiftedSortedArray {
     public static int searchSmallest(List<Integer> A) {
 	int start = 0;
 	int end = A.size() - 1;
-	int smallest = 0;
-	while (start <= end) {
+	while (start < end) {
 	    int mid = start + (end - start) / 2;
-	    if (mid - 1 > 0 && A.get(mid) < A.get(mid - 1)) {
-		smallest = A.get(mid);
-	    } else if (A.get(mid) > A.get(start)) {
+	    if (A.get(mid) > A.get(end)) {
 		start = mid + 1;
-	    } else if (A.get(mid) < A.get(start)) {
-		end = mid - 1;
+	    } else {
+		end = mid;
 	    }
 	}
-	return smallest;
+	return start;
     }
 
     public static void main(String[] args) {
