@@ -492,3 +492,7 @@
 /IsTreeBalanced$BalanceStatusWithHeight.class
 /LowestCommonAncestor$StatusItem.class
 /NonuniformRandomNumber$Interval.class
+/SortedArraysMerge$ElementAndItsList.class
+/SortedArraysMerge$2.class
+/SortIncreasingDecreasingArray$VirtualArray.class
+/KClosestStars$2.class

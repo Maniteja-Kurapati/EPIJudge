@@ -1,69 +1,93 @@
 package epi;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.function.BiPredicate;
+
 import epi.test_framework.EpiTest;
 import epi.test_framework.EpiTestComparator;
 import epi.test_framework.EpiTestExpectedType;
 import epi.test_framework.EpiUserType;
 import epi.test_framework.GenericTest;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.BiPredicate;
+
 public class KClosestStars {
-  @EpiUserType(ctorParams = {double.class, double.class, double.class})
+    @EpiUserType(ctorParams = { double.class, double.class, double.class })
 
-  public static class Star implements Comparable<Star> {
-    private double x, y, z;
+    public static class Star implements Comparable<Star> {
+	private double x, y, z;
 
-    public Star(double x, double y, double z) {
-      this.x = x;
-      this.y = y;
-      this.z = z;
+	public Star(double x, double y, double z) {
+	    this.x = x;
+	    this.y = y;
+	    this.z = z;
+	}
+
+	public double distance() {
+	    return Math.sqrt(x * x + y * y + z * z);
+	}
+
+	@Override
+	public int compareTo(Star that) {
+	    return Double.compare(this.distance(), that.distance());
+	}
+
+	@Override
+	public String toString() {
+	    return String.valueOf(distance());
+	}
     }
 
-    public double distance() { return Math.sqrt(x * x + y * y + z * z); }
+    public static List<Star> findClosestKStars(Iterator<Star> stars, int k) {
 
-    @Override
-    public int compareTo(Star that) {
-      return Double.compare(this.distance(), that.distance());
+	PriorityQueue<Star> maxheap = new PriorityQueue<>(new Comparator<Star>() {
+	    @Override
+	    public int compare(Star o1, Star o2) {
+		return -(Double.compare(o1.distance(), o2.distance()));
+	    }
+	});
+
+	for (int i = 0; i < k; i++) {
+	    maxheap.add(stars.next());
+	}
+
+	while (stars.hasNext()) {
+	    Star next = stars.next();
+	    if (next.distance() < maxheap.peek().distance()) {
+		maxheap.remove();
+		maxheap.add(next);
+	    }
+	}
+	return new ArrayList<>(maxheap);
     }
 
-    @Override
-    public String toString() {
-      return String.valueOf(distance());
+    @EpiTest(testDataFile = "k_closest_stars.tsv")
+    public static List<Star> findClosestKStarsWrapper(List<Star> stars, int k) {
+	return findClosestKStars(stars.iterator(), k);
     }
-  }
 
-  public static List<Star> findClosestKStars(Iterator<Star> stars, int k) {
-    // TODO - you fill in here.
-    return Collections.emptyList();
-  }
-  @EpiTest(testDataFile = "k_closest_stars.tsv")
-  public static List<Star> findClosestKStarsWrapper(List<Star> stars, int k) {
-    return findClosestKStars(stars.iterator(), k);
-  }
+    @EpiTestExpectedType
+    public static List<Double> expectedType;
 
-  @EpiTestExpectedType public static List<Double> expectedType;
+    @EpiTestComparator
+    public static BiPredicate<List<Double>, List<Star>> comp = (expected, result) -> {
+	if (expected.size() != result.size()) {
+	    return false;
+	}
+	Collections.sort(result);
+	for (int i = 0; i < result.size(); i++) {
+	    if (result.get(i).distance() != expected.get(i)) {
+		return false;
+	    }
+	}
+	return true;
+    };
 
-  @EpiTestComparator
-  public static BiPredicate<List<Double>, List<Star>> comp =
-      (expected, result) -> {
-    if (expected.size() != result.size()) {
-      return false;
+    public static void main(String[] args) {
+	System.exit(GenericTest.runFromAnnotations(args, "KClosestStars.java", new Object() {
+	}.getClass().getEnclosingClass()).ordinal());
     }
-    Collections.sort(result);
-    for (int i = 0; i < result.size(); i++) {
-      if (result.get(i).distance() != expected.get(i)) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  public static void main(String[] args) {
-    System.exit(
-        GenericTest
-            .runFromAnnotations(args, "KClosestStars.java",
-                                new Object() {}.getClass().getEnclosingClass())
-            .ordinal());
-  }
 }
