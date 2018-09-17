@@ -14,7 +14,6 @@ public class KthLargestInArray {
     public static int findKthLargest(int k, List<Integer> A) {
 	int lo = 0;
 	int hi = A.size() - 1;
-
 	while (lo <= hi) {
 	    int pivot = lo;
 	    int storeIndex = pivot + 1;
@@ -34,7 +33,8 @@ public class KthLargestInArray {
 	    } else if (numberOfelementsBeforePivot > k - 1) {
 		hi = storeIndex - 1;
 	    } else {
-		hi = storeIndex - 1 + k;
+		lo = storeIndex;
+		k = k - numberOfelementsBeforePivot - 1;
 	    }
 
 	}
